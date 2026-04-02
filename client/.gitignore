@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# Personal and environment files
+.env
+.env.local
+
+# Vercel deployment metadata
+.vercel
