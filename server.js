@@ -16,14 +16,20 @@ app.use(cors({
 }));
 
 // 2. MongoDB Connection (Using .env)
-const mongoURI = process.env.MONGO_URI;
+const mongoURI = process.env.MONGO_URI; 
 
 mongoose.connect(mongoURI)
-    .then(() => console.log("✅ MongoDB Atlas Connected!"))
-    .catch((err) => {
-        console.error("❌ MongoDB Connection Error:", err);
-        process.exit(1); // Connection fail hone par server stop kar do
-    });
+  .then(() => console.log("✅ MongoDB Atlas Connected!"))
+  .catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
+    // process.exit(1); 
+  });
+mongoose.connect(mongoURI)
+  .then(() => console.log("✅ MongoDB Atlas Connected!"))
+  .catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
+    // process.exit(1); // Is line ko comment kar do taaki server turant band na ho
+  });
 
 // 3. Routes
 app.get('/', (req, res) => {
