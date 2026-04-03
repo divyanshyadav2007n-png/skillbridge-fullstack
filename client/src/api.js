@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://skillbridge-fullstack.vercel.app'
+baseURL: 'https://skillbridge-fullstack.vercel.app'
 });
 
 API.interceptors.request.use((req) => {
