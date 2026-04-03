@@ -1,52 +1,65 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import API from '../api';
+import { useNavigate, Link } from 'react-router-dom';
+import API from '../api'; // Hamari Axios instance
+
 const Login = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-        // API call
-        const response = await API.post('/api/login', { email, password });
-        
-        const data = response.data;
+        e.preventDefault();
+        try {
+            // Vercel backend par login request
+            const response = await API.post('/api/login', { email, password });
+            
+            if (response.status === 200) {
+                const data = response.data;
+                alert("✅ Login Successful!");
 
-        if (response.status === 200) {
-            alert("✅ Login Successful!");
-            localStorage.setItem('user', JSON.stringify(data.user || data)); 
-            navigate('/dashboard'); 
+                // Token aur User info save karna (Auth ke liye zaroori hai)
+                localStorage.setItem('user', JSON.stringify(data.user || data));
+                
+                // Dashboard par bhej do
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            console.error("Login Error:", err);
+            // Backend se aane wala error message (e.g., "Invalid Credentials")
+            const msg = err.response?.data?.message || "Login failed. Please try again.";
+            alert("❌ " + msg);
         }
-    } catch (error) {
-        console.error("Login Error:", error);
-        const msg = error.response?.data?.message || "Invalid credentials!";
-        alert("❌ " + msg);
-    }
-};
+    };
 
     return (
         <div className="auth-container">
-            <h2>Login Page</h2>
+            <h2>Login</h2>
             <form onSubmit={handleLogin}>
-                <input 
-                    type="email" 
-                    placeholder="Email" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)} 
-                    required 
-                />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                />
-                <button type="submit">Login</button>
+                <div className="form-group">
+                    <label>Email:</label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        placeholder="Enter your email"
+                        required 
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Password:</label>
+                    <input 
+                        type="password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        placeholder="Enter password"
+                        required 
+                    />
+                </div>
+                <button type="submit" className="btn-auth">Login</button>
             </form>
-            <p>New user? <a href="/">Register here</a></p>
+            <p className="auth-footer">
+                Don't have an account? <Link to="/register">Register here</Link>
+            </p>
         </div>
     );
 };

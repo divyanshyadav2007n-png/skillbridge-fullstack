@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import API from '../api';
+import { useNavigate, Link } from 'react-router-dom';
+import API from '../api'; // Axios instance
+
 const Register = () => {
-    // 1. State setup (Saare extra brackets hata diye hain)
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -14,50 +16,60 @@ const Register = () => {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        // Line 20-24 replace ho gayi isse:
-        const response = await API.post('/api/register', formData);
-        
-        // Agar response sahi hai
-        if (response.status === 200 || response.status === 201) {
-            alert("Registration Successful!");
-            console.log("Success:", response.data);
+        e.preventDefault();
+        try {
+            // Vercel backend par request bhej raha hai
+            const response = await API.post('/api/register', formData);
+            
+            if (response.status === 200 || response.status === 201) {
+                alert("✅ Registration Successful!");
+                navigate('/login');
+            }
+        } catch (err) {
+            console.error("Network Error:", err);
+            // Backend se aane wala specific error dikhayega
+            const errorMsg = err.response?.data?.message || "Server se connect nahi ho pa raha.";
+            alert("❌ " + errorMsg);
         }
-    } catch (err) {
-        console.error("Network Error:", err);
-        // Agar server error de (jaise email already exists)
-        const errorMsg = err.response?.data?.message || "Server se connect nahi ho pa raha.";
-        alert(errorMsg);
-    }
-};
+    };
 
     return (
-        <div className="auth-container" style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div className="auth-container">
             <h2>Create Account</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'inline-block', textAlign: 'left', border: '1px solid #ccc', padding: '20px', borderRadius: '8px' }}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Name:</label><br/>
-                    <input name="name" placeholder="Enter Name" onChange={handleChange} required />
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Full Name:</label>
+                    <input 
+                        type="text" name="name" placeholder="Enter your name" 
+                        onChange={handleChange} required 
+                    />
                 </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Email:</label><br/>
-                    <input name="email" type="email" placeholder="Enter Email" onChange={handleChange} required />
+                <div className="form-group">
+                    <label>Email:</label>
+                    <input 
+                        type="email" name="email" placeholder="Enter email" 
+                        onChange={handleChange} required 
+                    />
                 </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Role:</label><br/>
+                <div className="form-group">
+                    <label>Role:</label>
                     <select name="role" onChange={handleChange}>
                         <option value="Student">Student</option>
-                        <option value="Employer">Employer</option>
+                        <option value="Company">Company</option>
                     </select>
                 </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Password:</label><br/>
-                    <input name="password" type="password" placeholder="Enter Password" onChange={handleChange} required />
+                <div className="form-group">
+                    <label>Password:</label>
+                    <input 
+                        type="password" name="password" placeholder="Min 6 characters" 
+                        onChange={handleChange} required 
+                    />
                 </div>
-                <button type="submit" style={{ width: '100%', padding: '10px', cursor: 'pointer' }}>Register</button>
+                <button type="submit" className="btn-auth">Register</button>
             </form>
-            <p>Already have an account? <a href="/login">Login here</a></p>
+            <p className="auth-footer">
+                Already have an account? <Link to="/login">Login here</Link>
+            </p>
         </div>
     );
 };
