@@ -15,15 +15,13 @@ app.use(cors({
     credentials: true
 }));
 
-// 2. MongoDB Connection (Using .env)
+// 2. MongoDB Connection
 const mongoURI = process.env.MONGO_URI; 
 
 mongoose.connect(mongoURI)
   .then(() => console.log("✅ MongoDB Atlas Connected!"))
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Error:", err);
-    // process.exit(1); 
-  });
+  .catch((err) => console.error("❌ Connection Error:", err));
+  
 mongoose.connect(mongoURI)
   .then(() => console.log("✅ MongoDB Atlas Connected!"))
   .catch((err) => {
