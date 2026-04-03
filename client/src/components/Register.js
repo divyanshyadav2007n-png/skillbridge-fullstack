@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import API from '../api';
 const Register = () => {
     // 1. State setup (Saare extra brackets hata diye hain)
     const [formData, setFormData] = useState({
@@ -14,28 +14,23 @@ const Register = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // 2. Fetch URL - Local Testing ke liye 5001 use kar rahe hain
-            const response = await fetch('http://localhost:5001/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("Registration Successful!");
-                console.log("Success:", data);
-            } else {
-                alert("Registration Failed: " + data.message);
-            }
-        } catch (err) {
-            console.error("Network Error:", err);
-            alert("Server se connect nahi ho pa raha. Kya backend chalu hai?");
+    e.preventDefault();
+    try {
+        // Line 20-24 replace ho gayi isse:
+        const response = await API.post('/api/register', formData);
+        
+        // Agar response sahi hai
+        if (response.status === 200 || response.status === 201) {
+            alert("Registration Successful!");
+            console.log("Success:", response.data);
         }
-    };
+    } catch (err) {
+        console.error("Network Error:", err);
+        // Agar server error de (jaise email already exists)
+        const errorMsg = err.response?.data?.message || "Server se connect nahi ho pa raha.";
+        alert(errorMsg);
+    }
+};
 
     return (
         <div className="auth-container" style={{ textAlign: 'center', marginTop: '50px' }}>

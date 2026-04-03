@@ -1,33 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import API from '../api';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+    e.preventDefault();
+    try {
+        // API call
+        const response = await API.post('/api/login', { email, password });
+        
+        const data = response.data;
 
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("✅ Login Successful!");
-                localStorage.setItem('user', JSON.stringify(data.user));
-                navigate('/dashboard'); // Login ke baad dashboard pe bhejne ke liye
-            } else {
-                alert("❌ " + data.message);
-            }
-        } catch (error) {
-            alert("Server Error! Check if backend is running.");
+        if (response.status === 200) {
+            alert("✅ Login Successful!");
+            localStorage.setItem('user', JSON.stringify(data.user || data)); 
+            navigate('/dashboard'); 
         }
-    };
+    } catch (error) {
+        console.error("Login Error:", error);
+        const msg = error.response?.data?.message || "Invalid credentials!";
+        alert("❌ " + msg);
+    }
+};
 
     return (
         <div className="auth-container">
