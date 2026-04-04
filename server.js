@@ -8,25 +8,21 @@ const app = express();
 // 1. Middleware
 app.use(express.json());
 
-// CORS Setup: Isse "Server se connect nahi ho pa raha" error solve hoga
+// CORS Setup
 app.use(cors({
-    origin: "*", 
+    origin: ["http://localhost:3000", "https://skillbridge-fullstack.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
 
-// 2. MongoDB Connection
+// 2. MongoDB Connection (Ab sirf ek baar)
 const mongoURI = process.env.MONGO_URI; 
 
 mongoose.connect(mongoURI)
   .then(() => console.log("✅ MongoDB Atlas Connected!"))
-  .catch((err) => console.error("❌ Connection Error:", err));
-  
-mongoose.connect(mongoURI)
-  .then(() => console.log("✅ MongoDB Atlas Connected!"))
   .catch((err) => {
     console.error("❌ MongoDB Connection Error:", err);
-    // process.exit(1); // Is line ko comment kar do taaki server turant band na ho
+    // process.exit(1); 
   });
 
 // 3. Routes
@@ -34,8 +30,9 @@ app.get('/', (req, res) => {
     res.send("SkillBridge Backend is Running! 🚀");
 });
 
-// Aapke API routes yahan aayenge (Example)
-// app.use('/api', require('./routes/apiRoutes'));
+// Aapke API routes yahan aayenge
+// const authRoutes = require('./routes/auth'); // Example
+// app.use('/api/auth', authRoutes);
 
 // 4. Port Setup
 const PORT = process.env.PORT || 5000;
