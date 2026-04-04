@@ -5,8 +5,10 @@ require('dotenv').config();
 
 const app = express();
 
-// 1. Middleware
-app.use(cors()); 
+app.use(cors({
+  origin: ["http://localhost:3000", "https://skillbridge-fullstack.vercel.app"],
+  credentials: true
+}));
 app.use(express.json());
 
 // 2. MongoDB Connection
