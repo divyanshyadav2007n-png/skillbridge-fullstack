@@ -5,16 +5,17 @@ require('dotenv').config();
 
 const app = express();
 
-// 1. CORS Middleware (CORS Error Fix karne ke liye)
+// 1. CORS Middleware - Iska order sabse upar hona chahiye
 app.use(cors({
-    origin: '*', // Sabhi origins allow honge taaki localhost se Vercel connect ho sake
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json()); // JSON data handle karne ke liye
 
 // 2. MongoDB Connection
+// Note: MongoDB connect hone ka wait serverless function mein zaroori hai
 const mongoURI = process.env.MONGO_URI;
 mongoose.connect(mongoURI)
     .then(() => console.log("✅ MongoDB Atlas Connected (Internship Hub)"))
@@ -29,10 +30,14 @@ app.get("/", (req, res) => {
 const authRoutes = require('./routes/auth'); 
 app.use('/api/auth', authRoutes);
 
-// 5. Port Setup for Vercel
+// 5. Port Setup for Local Development
+// Vercel app.listen() ko ignore karta hai, par localhost ke liye ye zaroori hai
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+    });
+}
 
-module.exports = app; 
+// 6. Export for Vercel (Sabse Important Line)
+module.exports = app;
