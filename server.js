@@ -5,40 +5,33 @@ require('dotenv').config();
 
 const app = express();
 
-// 1. CORS Middleware (Frontend-Backend connectivity fix)
+// 1. CORS Setup
 app.use(cors({
-    origin: "*", // Kal ke demo ke liye sabse safe, saare origins allow karega
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.use(express.json()); // JSON data handle karne ke liye
+app.use(express.json());
 
-// 2. MongoDB Connection (Vercel environment variable se link)
+// 2. MongoDB Connection
 const mongoURI = process.env.MONGO_URI;
 
-if (!mongoURI) {
-    console.error("❌ Error: MONGO_URI is not defined in Environment Variables!");
-}
-
 mongoose.connect(mongoURI)
-    .then(() => console.log("✅ MongoDB Atlas Connected Successfully"))
-    .catch(err => {
-        console.error("❌ MongoDB Connection Error:", err.message);
-    });
+    .then(() => console.log("✅ MongoDB Connected: skillbridge"))
+    .catch(err => console.error("❌ MongoDB Error:", err.message));
 
-// 3. Basic Test Route (Check karne ke liye ki backend live hai)
+// 3. Test Route (Live check karne ke liye)
 app.get("/", (req, res) => {
-    res.status(200).send("Internship Hub Backend is Live! 🚀");
+    res.status(200).send("Skillbridge Backend is officially LIVE! 🚀");
 });
 
-// 4. Auth Routes (Login/Register)
-// Ensure karo ki aapke routes folder mein auth.js file sahi jagah hai
+// 4. Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// 5. Port Setup (Vercel automatically handle karta hai)
+// 5. Port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
