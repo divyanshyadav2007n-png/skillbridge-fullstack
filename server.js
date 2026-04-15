@@ -5,40 +5,40 @@ require('dotenv').config();
 
 const app = express();
 
-// 1. CORS Middleware (Sabse upar hona chahiye)
-// Isse aapka localhost:3000 wala CORS error solve hoga
+// 1. CORS Middleware (Frontend-Backend connectivity fix)
 app.use(cors({
-    origin: ["http://localhost:3000", "https://skillbridge-fullstack.vercel.app"],
-    methods: ["POST", "GET", "OPTIONS"],
-    credentials: true
+    origin: "*", // Kal ke demo ke liye sabse safe, saare origins allow karega
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json()); // JSON data handle karne ke liye
 
-// 2. MongoDB Connection
+// 2. MongoDB Connection (Vercel environment variable se link)
 const mongoURI = process.env.MONGO_URI;
-mongoose.connect(mongoURI)
-    .then(() => console.log("✅ MongoDB Atlas Connected"))
-    .catch(err => console.log("❌ MongoDB Error:", err));
 
-// 3. Basic Test Route
+if (!mongoURI) {
+    console.error("❌ Error: MONGO_URI is not defined in Environment Variables!");
+}
+
+mongoose.connect(mongoURI)
+    .then(() => console.log("✅ MongoDB Atlas Connected Successfully"))
+    .catch(err => {
+        console.error("❌ MongoDB Connection Error:", err.message);
+    });
+
+// 3. Basic Test Route (Check karne ke liye ki backend live hai)
 app.get("/", (req, res) => {
     res.status(200).send("Internship Hub Backend is Live! 🚀");
 });
 
-// 4. Auth Routes
-const authRoutes = require('./routes/auth'); 
+// 4. Auth Routes (Login/Register)
+// Ensure karo ki aapke routes folder mein auth.js file sahi jagah hai
+const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// 5. Port Setup & Export for Vercel
+// 5. Port Setup (Vercel automatically handle karta hai)
 const PORT = process.env.PORT || 5000;
-
-// Vercel serverless environment mein app.listen ki hamesha zaroorat nahi hoti, 
-// par local development ke liye ye block help karega.
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-    });
-}
-
-module.exports = app; // Ye line Vercel deployment ke liye sabse zaroori hai
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
