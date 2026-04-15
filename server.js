@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const app = express();
 
-// 1. CORS Setup
+// CORS for Vercel
 app.use(cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -14,23 +14,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// 2. MongoDB Connection
+// MongoDB Connection with Error Handling
 const mongoURI = process.env.MONGO_URI;
 
 mongoose.connect(mongoURI)
     .then(() => console.log("✅ MongoDB Connected: skillbridge"))
     .catch(err => console.error("❌ MongoDB Error:", err.message));
 
-// 3. Test Route (Live check karne ke liye)
+// Main Route to test deployment
 app.get("/", (req, res) => {
     res.status(200).send("Skillbridge Backend is officially LIVE! 🚀");
 });
 
-// 4. Routes
+// Authentication Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// 5. Port
+// Vercel handles the port automatically
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
