@@ -1,20 +1,11 @@
 import axios from 'axios';
 
-// Aapka Vercel backend URL
+// 1. Aapka live Vercel backend URL
 const API = axios.create({
-  baseURL: 'skillbridge-fullstack-1e2v16mtp.vercel.app'
+  baseURL: 'https://skillbridge-fullstack-1e2v16mtp.vercel.app' 
 });
 
-// Request interceptor (Optional: Token bhejne ke liye agar login system hai)
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
-});
-
-// Register function
+// 2. Registration function
 export const registerUser = async (userData) => {
   try {
     const response = await API.post('/api/auth/register', userData);
@@ -25,7 +16,7 @@ export const registerUser = async (userData) => {
   }
 };
 
-// Login function
+// 3. Login function
 export const loginUser = async (userData) => {
   try {
     const response = await API.post('/api/auth/login', userData);
@@ -36,4 +27,5 @@ export const loginUser = async (userData) => {
   }
 };
 
+// 4. Sabse important: Default export (taki Login.js ka error khatam ho jaye)
 export default API;
