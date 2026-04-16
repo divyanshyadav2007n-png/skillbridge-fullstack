@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "http://127.0.0.1:5001",
+  "proxy": "skillbridge-fullstack-1e2v16mtp.vercel.app",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
