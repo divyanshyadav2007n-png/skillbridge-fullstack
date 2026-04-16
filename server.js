@@ -9,7 +9,8 @@ const authRoutes = require('./routes/auth');
 const app = express();
 app.use(cors({
   origin: ["http://localhost:3000", "https://skillbridge-fullstack-1e2v16mtp.vercel.app"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // OPTIONS zaroori hai preflight ke liye
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
 app.use(express.json());
