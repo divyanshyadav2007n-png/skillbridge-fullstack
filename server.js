@@ -7,7 +7,11 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth'); 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "https://skillbridge-fullstack-1e2v16mtp.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection
