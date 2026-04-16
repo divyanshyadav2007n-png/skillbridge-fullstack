@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Aapka Vercel backend URL
 const API = axios.create({
-  baseURL: 'https://skillbridge-fullstack-fr8rsdi1y.vercel.app'
+  baseURL: 'skillbridge-fullstack-1e2v16mtp.vercel.app'
 });
 
 // Request interceptor (Optional: Token bhejne ke liye agar login system hai)
